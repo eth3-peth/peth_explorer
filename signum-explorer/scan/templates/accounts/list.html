@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+{% load burst_tags %}
+
+{% block title %} - Top accounts{% endblock %}
+
+{% block content %}
+
+  <h5 class="p-2">Top accounts by balance</h5>
+
+  <div class="card-deck mb-3">
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+
+        <div class="d-flex flex-column flex-md-row align-items-center">
+          <small class="my-0 mr-md-auto text-muted">
+
+            More than {{ accounts_cnt|intcomma }} accounts found<br>
+            <small>(Showing the 1k top accounts only)</small>
+
+          </small>
+
+          {% include "paginator.html" %}
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover small table-sm">
+            <thead>
+            <tr>
+              <th scope="col">Rank</th>
+              <th scope="col">Name</th>
+              <th scope="col">Percent</th>
+              <th scope="col">Balance</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for account in accounts %}
+              <tr>
+                <td>
+                  {% rank_row forloop.counter %}
+                </td>
+                <td class="text-nowrap">
+                  {% include "account_link.html" with account_id=account.id account_name=account.id|account_name_string %}
+                </td>
+                <td>{{ account.id|account_balance|percent:balance__sum|rounding:2|intcomma }} %</td>
+                <td class="text-nowrap">{{ account.id|account_balance|burst_amount|rounding:5|intcomma|append_symbol }} </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        {% include "paginator.html" %}
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

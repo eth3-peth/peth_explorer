@@ -1,0 +1,48 @@
+{% load humanize %}
+{% load burst_tags %}
+
+<div class="table-responsive">
+  <table class="table table-hover small table-sm text-left">
+    <tbody>
+    {% for block in blocks %}
+      <tr>
+        <td  class="text-nowrap align-top">
+          <span class="btn btn-outline-success">
+            <span class="btn-icon__inner text-dark">
+              <a href="{% url 'block-detail' block.height %}">BK</a> </span>
+          </span>
+        </td>
+        <td class="text-nowrap align-top">
+          <a href="{% url 'block-detail' block.height %}">{{ block.height }}</a><br>
+          <span class="small">{{ block.timestamp|time_change }}</span>
+        </td>
+        <td class="d-none d-sm-table-cell">
+          {% if block.txs_cnt > 0 %}
+            <a href="{% url 'txs' %}?block={{ block.height }}">{{ block.txs_cnt|intcomma }} txns</a>
+          {% else %}
+            0 txns
+          {% endif %}
+          <span>in {% block_generation_time block %} </span><br>
+          <span> Miner {% include "account_link.html" with account_id=block.generator_id account_name=block.generator_name %}</span><br>
+          <span>Total Sent: {{block.total_amount|burst_amount|rounding:5|intcomma }}</span>
+        </td>
+        <td class="text-nowrap align-top" title="Block reward">
+          <span>Reward</span><br>
+          {% if block.total_fee_burnt %}
+<!--            <span>{{ block|block_reward_with_fee_burnt|floatformat:8 |intcomma }}</span><br>-->
+               <span>{{  block|block_reward_with_fee_burnt|div:10000}}</span><br>
+          {% else %}
+            <span>block|block_reward_with_fee|rounding:5|intcomma </span><br>
+          {% endif %}
+          <span class="text-success"> {% coin_symbol %} </span>
+        </td>
+        <td class="text-nowrap align-top" title="Block burned">
+            <span>Burned</span><br>
+            <span> 🔥 {{ block.total_fee_burnt|burst_amount|rounding:5|intcomma }}</span><br>
+            <span class="text-success"> {% coin_symbol %} </span>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>

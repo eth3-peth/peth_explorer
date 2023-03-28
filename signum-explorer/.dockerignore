@@ -1,0 +1,11 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+.coverage
+coverage.xml
+.git
+*.sqlite3
+.env
+.idea

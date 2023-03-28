@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+{% load burst_tags %}
+
+{% block title %} - {{ at.name }} Contract {% endblock %}
+
+{% block description %}
+{{ at.name }}
+{{ at.description }}
+{% endblock %}
+
+{% block scripts %}
+  <script>jQuery('#qr_code').qrcode({text: "{{ at.id|num2rs }}", width: 240, height: 240});</script>
+{% endblock %}
+
+{% block content %}
+  <!-- QRModal -->
+  <div class="modal fade" id="QRModal" tabindex="-1" role="dialog" aria-labelledby="QRModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-break small" id="QRModalLabel">{{ at.id|num2rs }}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+          <div id="qr_code" title="S-{{ at.id|num2rs }}"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h5 class="p-2">Contract<br class="d-md-none" /> {{ at.id|num2rs }}
+    <a class="btn btn-sm btn-icon btn-soft-secondary rounded-circle copy-btn px-1" href="#" data-clipboard-text="{{ at.id|num2rs }}"><i class="far fa-copy"></i></a>
+    <a class="btn btn-sm btn-icon btn-soft-secondary rounded-circle" href="#" data-toggle="modal" data-target="#QRModal" title="Click to view QR Code"><i class="fa fa-qrcode"></i></a>
+  </h5>
+
+  <div class="card-deck mb-3">
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+
+          <div class="table-responsive">
+            <table class="table small table-sm">
+              <tbody>
+              <tr>
+                <th>Address</th>
+                <th>
+                  {% include "account_link.html" with account_id=at.id %}
+                </th>
+              </tr>
+              <tr>
+                <th>ID</th>
+                <th>
+                  <a href="{% url 'tx-detail' at.id %}">{{ at.id }}</a>
+                </th>
+              </tr>
+              <tr>
+                <th style="width: 130px;">Name</th>
+                <td style="word-wrap: break-word; max-width: 250px">{{ at.name }}</td>
+              </tr>
+              <tr>
+                <th>Description</th>
+                <td style="word-wrap: break-word; max-width: 250px">{{ at.description }}</td>
+              </tr>
+              <tr>
+                <th>Creator</th>
+                <td>
+                  {% include "account_link.html" with account_id=at.creator_id account_name=at.creator_name oneline=True %}
+                </td>
+              </tr>
+              <!--
+              <tr>
+                <th style="min-width: 160px;">Block</th>
+                <td><a href="{% url 'block-detail' at.height %}">{{ at.height }}</a></td>
+              </tr>
+              -->
+              <tr>
+                <th>Creation Block</th>
+                <td>
+                  <a href="{% url 'block-detail' at.creation_height %}">{{ at.creation_height }}</a></td>
+              </tr>
+              <tr>
+                <th>Version</th>
+                <td>{{ at.version }}</td>
+              </tr>
+              <tr>
+                <th>Activation</th>
+                <td>
+                  {{ at.activation|burst_amount|intcomma|append_symbol }}<br class="d-md-none" />
+                  <span class="text-info">(${{ at.activation|burst_amount|in_usd|floatformat:2|intcomma }} @ ${{ burst_info.exchange.price_usd|rounding:4|intcomma }} per {% coin_symbol %})</span>
+                </td>
+              </tr>
+                <tr>
+                <th>Code Hash ID</th>
+                <td>{{ at.ap_code_hash_id }}</td>
+              </tr>
+              <!--
+              <tr>
+                <th>CSize</th>
+                <td>{{ at.csize }}</td>
+              </tr>
+              <tr>
+                <th>DSize</th>
+                <td>{{ at.dsize }}</td>
+              </tr>
+              <tr>
+                <th>CUser Stack Bytes</th>
+                <td>{{ at.c_user_stack_bytes }}</td>
+              </tr>
+              <tr>
+                <th>CCall Stack Bytes</th>
+                <td>{{ at.c_call_stack_bytes }}</td>
+              </tr>
+              -->
+              <tr>
+                <th>State bytes</th>
+                <td class="text-monospace">
+                  <textarea id="at_state" class="form-control" spellcheck="false" rows="2" disabled>{{ at.state|bin2hex }}</textarea>
+                  <label for="at_state"></label>
+                </td>
+              </tr>
+              <tr>
+                <th>Code bytes</th>
+                <td class="text-monospace">
+                  <textarea id="ap_code" class="form-control" spellcheck="false" rows="5" disabled>{{ at.ap_code|gzip2hex }}</textarea>
+                  <label for="ap_code"></label>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+    </div>
+  </div>
+
+{% endblock %}

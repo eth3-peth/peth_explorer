@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+{% block title %} - Nodes List{% endblock %}
+
+{% block content %}
+
+  <h5 class="p-2">Featured Nodes</h5>
+
+  <div class="card-deck mb-3">
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover small table-sm">
+            <thead>
+            <tr>
+              <th scope="col">Address</th>
+              <th scope="col">State</th>
+              <th scope="col">Web-Wallet</th>
+              <th scope="col">Height</th>
+              <th scope="col">Version</th>
+              <th scope="col">Country</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for peer in featured_peers %}
+              <tr>
+                <td><a href="{% url 'peer-detail' peer.announced_address %}">{{ peer.announced_address }}</a></td>
+                <td>{{ peer.get_state_display }}</td>
+                <td><a href="https://{{ peer.announced_address }}" target="_blank">https://{{ peer.announced_address }}</a></td>
+                <td>{{ peer.height }}</td>
+                <td>{{ peer.version }}</td>
+                <td>{{ peer.country_code }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <h5 class="p-2">Node List</h5>
+
+  <div class="card-deck mb-3">
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <div class="d-flex flex-column flex-md-row align-items-center">
+          <small class="my-0 mr-md-auto text-muted">
+              A total of {{ paginator.count|intcomma }} nodes found
+          </small>
+          {% include "paginator.html" %}
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover small table-sm">
+            <thead>
+            <tr>
+              <th scope="col">Address</th>
+              <th scope="col">State</th>
+              <th scope="col">Availability</th>
+              <th scope="col">Height</th>
+              <th scope="col">Version</th>
+              <th scope="col">Country</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for peer in peers %}
+              <tr>
+                <td><a href="{% url 'peer-detail' peer.announced_address %}">{{ peer.announced_address }}</a></td>
+                <td>{{ peer.get_state_display }}</td>
+                <td>{{ peer.availability|floatformat:2 }}%</td>
+                <td>{{ peer.height }}</td>
+                <td>{{ peer.version }}</td>
+                <td>{{ peer.country_code }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        {% include "paginator.html" %}
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

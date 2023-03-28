@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+{% load burst_tags %}
+
+{% block title %} - Blocks{% endblock %}
+
+{% block content %}
+
+  <h5 class="p-2">Blocks
+    {% if 'm' in request.GET %}
+      <br class="d-md-none" />
+      <small class="text-muted">forged by <a href="{% url 'address-detail' request.GET.m %}">{{ request.GET.m|num2rs }}</a></small>
+    {% endif %}
+  </h5>
+
+  <div class="card-deck mb-3">
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+
+        <div class="d-flex flex-column flex-md-row align-items-center">
+          <small class="my-0 mr-md-auto text-muted">
+            {% if blocks %}
+              {% if 'm' in request.GET %}
+                A total of {{ paginator.count|intcomma }} blocks found
+              {% else %}
+                Block #{% with blocks|first as blk %}{{ blk.height }} to #{{ blk.height|sub:blocks.count|add:1 }}{% endwith %} (Total of {{ last_height|add:1|intcomma }} blocks)
+              {% endif %}
+            {% else %}
+              0 blocks found
+            {% endif %}
+          </small>
+          {% include "paginator.html" %}
+        </div>
+
+        <div class="table-responsive bg-white">
+          <table class="table table-hover small table-sm">
+            <thead>
+            <tr>
+              <th scope="col">Height</th>
+              <th scope="col" class="d-none d-sm-table-cell">Timestamp</th>
+              <th scope="col" class="d-none d-sm-table-cell">Txn</th>
+              <th scope="col">Sent</th>
+              <th scope="col" >Reward</th>
+              <th scope="col" >Burned</th>
+              <th scope="col" class="d-none d-sm-table-cell">Size</th>
+              <th scope="col" class="d-none d-sm-table-cell">Miner</th>
+<!--              <th scope="col" class="d-none d-sm-table-cell">Pool</th>-->
+            </tr>
+            </thead>
+            <tbody>
+            {% for block in blocks %}
+              <tr>
+                <td><a href="{% url 'block-detail' block.height %}">{{ block.height }}</a></td>
+                <td class="text-nowrap d-none d-sm-table-cell">{{ block.timestamp|time_change }}</td>
+                <td class="d-none d-sm-table-cell">
+                  {% if block.txs_cnt > 0 %}
+                    <a href="{% url 'txs' %}?block={{ block.height }}">{{ block.txs_cnt|intcomma }}</a>
+                  {% else %}
+                    0
+                  {% endif %}
+                </td>
+                <td class="text-nowrap">
+                  <span>{{ block.total_amount|burst_amount|rounding:5|intcomma }}</span><br>
+                  <span class="text-success"> {% coin_symbol %} </span>
+                </td>
+                <td class="text-nowrap ">
+                  {% if block.total_fee_burnt %}
+                      {% if block.height >= 28850 %}
+                        <span>{{  block|block_reward_with_fee_burnt|div:10000}}</span><br>
+                      {% else %}
+                        <span><span>{{ block|block_reward_with_fee|rounding:5|intcomma }}</span><br></span><br>
+                      {% endif %}
+                  {% else %}
+                    <span> {{ block|block_reward_with_fee|rounding:5|intcomma }} </span><br>
+                  {% endif %}
+                  <span class="text-success"> {% coin_symbol %} </span>
+                </td>
+                <td class="text-nowrap ">
+                  <span>🔥 {{ block.total_fee_burnt|burst_amount|rounding:5|intcomma }} </span><br>
+                  <span class="text-success"> {% coin_symbol %} </span>
+                </td>
+                <td class="d-none d-sm-table-cell">{{ block.payload_length|filesizeformat }}</td>
+                <td class="text-nowrap d-none d-sm-table-cell">
+                  {% include "account_link.html" with account_id=block.generator_id account_name=block.generator_name filtered_account=request.GET.m %}
+                </td>
+<!--                <td class="text-nowrap d-none d-sm-table-cell">-->
+<!--                  {% if block.pool_id and block.pool_id != block.generator_id %}-->
+<!--                    {% include "account_link.html" with account_id=block.pool_id account_name=block.pool_name %}-->
+<!--                  {% else %}-->
+<!--                    <span class="text-info">Solo Miner</span>-->
+<!--                  {% endif %}-->
+<!--                </td>-->
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% include "paginator.html" %}
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

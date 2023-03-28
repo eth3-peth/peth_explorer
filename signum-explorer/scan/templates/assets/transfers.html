@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+{% load burst_tags %}
+
+{% block content %}
+
+  <h5 class="p-2">Token Transfers
+    {% if 'asset' in request.GET %}
+      <br class="d-md-none" />
+      <small class="text-muted">For asset #<a href="{% url 'asset-detail' request.GET.asset %}">{{ request.GET.asset }}</a></small>
+    {% elif 'a' in request.GET %}
+      <br class="d-md-none" />
+      <small class="text-muted">for address #<a href="{% url 'address-detail' request.GET.a %}">{{ request.GET.a|num2rs }}</a></small>
+    {% endif %}
+  </h5>
+
+  <div class="card-deck mb-3">
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+
+        <div class="d-flex flex-column flex-md-row align-items-center">
+          <small class="my-0 mr-md-auto text-muted">
+            {% if 'a' not in request.GET and assets_transfers_cnt > paginator.count %}
+              More than > {{ assets_transfers_cnt|intcomma }} transfers found<br>
+              <small>(Showing the lastest 10k records)</small>
+            {% else %}
+              A total of
+              {% if assets_transfers %}
+                {{ paginator.count|intcomma }}
+              {% else %}
+                0
+              {% endif %}
+              transfers found
+            {% endif %}
+          </small>
+          {% include "paginator.html" %}
+        </div>
+
+        {% include "assets/transfers_list.html" with asset_specific=1 filtered_account=request.GET.a %}
+
+        {% include "paginator.html" %}
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

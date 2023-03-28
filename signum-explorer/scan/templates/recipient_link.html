@@ -1,0 +1,31 @@
+{% load humanize %}
+{% load burst_tags %}
+
+{% if account_id %}
+  {% include "account_link.html" with account_id=account_id account_name=account_name oneline=oneline %}
+{% elif tx.recipient_id %}
+  {% include "account_link.html" with account_id=tx.recipient_id account_name=tx.recipient_name oneline=oneline %}
+{% elif tx.type == 0 and tx.subtype == 1 or tx.type == 0 and tx.subtype == 2 %}
+  {% if tx.recipients and oneline %}
+    <table class="table table-hover small no-border text-nowrap" style="max-width: 250px; margin-left: -5px; margin-bottom: -5px;">
+      <tbody>
+      {% for r in tx.recipients %}
+        <tr>
+          <td>
+            <span>{% include "account_link.html" with account_id=r.id account_name=' ' oneline=oneline %}</span>
+            <span>{{ r.amount|burst_amount|intcomma|append_symbol }}
+<!--              <span class="text-info">(${{ r.amount|burst_amount|in_usd|rounding:4|intcomma }})</span>-->
+            </span>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <a href="{% url 'tx-detail' tx.id %}" class="text-info">
+      multiple recipients
+    </a>
+    {% if not oneline %}<br>{% endif %}
+    <small><span class="text-black-50">see transaction details</span></small>
+  {% endif %}
+{% endif %}

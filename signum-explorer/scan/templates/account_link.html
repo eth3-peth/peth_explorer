@@ -1,0 +1,21 @@
+{% load burst_tags %}
+
+  {% if filtered_account|slugify == account_id|slugify %}
+  {{ account_id|num2rs }}
+{% else %}
+  <a href="{% url 'address-detail' account_id %}">
+    {{ account_id|num2rs }}
+  </a>
+{% endif %}
+{% if not oneline %}
+  <br>
+{% else %}
+  <br class="d-md-none" />
+{% endif %}
+<small>
+  {% if account_name %}
+    <span class="text-success" title="{{ account_name }}">{{ account_name|truncatechars:30 }}</span>
+  {% else %}
+    <span class="text-secondary"></span>
+  {% endif %}
+</small>

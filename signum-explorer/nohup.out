@@ -1,0 +1,224 @@
+System check identified some issues:
+
+WARNINGS:
+account: (models.W035) db_table 'account' is used by multiple models: java_wallet.Account, java_wallet.AccountBalance.
+	HINT: You have configured settings.DATABASE_ROUTERS. Verify that java_wallet.Account, java_wallet.AccountBalance are correctly routed to separate databases.
+
+System check identified 1 issue (0 silenced).
+[23/Oct/2022 07:10:35] ERROR [django.request:230] Internal Server Error: /
+Traceback (most recent call last):
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/utils/decorators.py", line 130, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/signum-explorer/scan/views/index.py", line 43, in index
+    return render(request, "home/index.html", context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 170, in render
+    return self._render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 162, in _render
+    return self.nodelist.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 905, in render_annotated
+    return self.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/loader_tags.py", line 150, in render
+    return compiled_parent._render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 162, in _render
+    return self.nodelist.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 905, in render_annotated
+    return self.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/loader_tags.py", line 62, in render
+    result = block.nodelist.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 905, in render_annotated
+    return self.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/loader_tags.py", line 183, in render
+    template = context.template.engine.select_template(template_name)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/engine.py", line 174, in select_template
+    return self.get_template(template_name)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/engine.py", line 143, in get_template
+    template, origin = self.find_template(template_name)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/engine.py", line 125, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/loaders/cached.py", line 58, in get_template
+    template = super().get_template(template_name, skip)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/loaders/base.py", line 30, in get_template
+    contents, origin, origin.template_name, self.engine,
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 155, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 193, in compile_nodelist
+    return parser.parse()
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 478, in parse
+    raise self.error(token, e)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 476, in parse
+    compiled_result = compile_func(self, token)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/defaulttags.py", line 817, in do_for
+    nodelist_loop = parser.parse(('empty', 'endfor',))
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 449, in parse
+    raise self.error(token, e)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 447, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 563, in compile_filter
+    return FilterExpression(token, self)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 658, in __init__
+    self.args_check(filter_name, filter_func, args)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 718, in args_check
+    (name, alen - dlen, plen))
+django.template.exceptions.TemplateSyntaxError: time_change requires 0 arguments, 1 provided
+[23/Oct/2022 07:10:35] ERROR [django.server:161] "GET / HTTP/1.1" 500 12679
+[23/Oct/2022 07:10:35] WARNING [django.server:161] "GET /static/fontawesome-free-5.15.4-web/css/all.min.css HTTP/1.1" 404 12356
+[23/Oct/2022 07:10:37] ERROR [django.request:230] Internal Server Error: /
+Traceback (most recent call last):
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/utils/decorators.py", line 130, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/signum-explorer/scan/views/index.py", line 43, in index
+    return render(request, "home/index.html", context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 170, in render
+    return self._render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 162, in _render
+    return self.nodelist.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 905, in render_annotated
+    return self.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/loader_tags.py", line 150, in render
+    return compiled_parent._render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 162, in _render
+    return self.nodelist.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 905, in render_annotated
+    return self.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/loader_tags.py", line 62, in render
+    result = block.nodelist.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 905, in render_annotated
+    return self.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/loader_tags.py", line 183, in render
+    template = context.template.engine.select_template(template_name)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/engine.py", line 174, in select_template
+    return self.get_template(template_name)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/engine.py", line 143, in get_template
+    template, origin = self.find_template(template_name)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/engine.py", line 125, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/loaders/cached.py", line 58, in get_template
+    template = super().get_template(template_name, skip)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/loaders/base.py", line 30, in get_template
+    contents, origin, origin.template_name, self.engine,
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 155, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 193, in compile_nodelist
+    return parser.parse()
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 478, in parse
+    raise self.error(token, e)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 476, in parse
+    compiled_result = compile_func(self, token)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/defaulttags.py", line 817, in do_for
+    nodelist_loop = parser.parse(('empty', 'endfor',))
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 449, in parse
+    raise self.error(token, e)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 447, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 563, in compile_filter
+    return FilterExpression(token, self)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 658, in __init__
+    self.args_check(filter_name, filter_func, args)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 718, in args_check
+    (name, alen - dlen, plen))
+django.template.exceptions.TemplateSyntaxError: time_change requires 0 arguments, 1 provided
+[23/Oct/2022 07:10:37] ERROR [django.server:161] "GET / HTTP/1.1" 500 12679
+[23/Oct/2022 07:10:37] WARNING [django.server:161] "GET /static/fontawesome-free-5.15.4-web/css/all.min.css HTTP/1.1" 404 12356
+[23/Oct/2022 07:11:28] ERROR [django.request:230] Internal Server Error: /
+Traceback (most recent call last):
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/core/handlers/exception.py", line 47, in inner
+    response = get_response(request)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/core/handlers/base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/utils/decorators.py", line 130, in _wrapped_view
+    response = view_func(request, *args, **kwargs)
+  File "/home/signum-explorer/scan/views/index.py", line 43, in index
+    return render(request, "home/index.html", context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/shortcuts.py", line 19, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/loader.py", line 62, in render_to_string
+    return template.render(context, request)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/backends/django.py", line 61, in render
+    return self.template.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 170, in render
+    return self._render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 162, in _render
+    return self.nodelist.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 905, in render_annotated
+    return self.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/loader_tags.py", line 150, in render
+    return compiled_parent._render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 162, in _render
+    return self.nodelist.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 905, in render_annotated
+    return self.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/loader_tags.py", line 62, in render
+    result = block.nodelist.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 938, in render
+    bit = node.render_annotated(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 905, in render_annotated
+    return self.render(context)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/loader_tags.py", line 183, in render
+    template = context.template.engine.select_template(template_name)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/engine.py", line 174, in select_template
+    return self.get_template(template_name)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/engine.py", line 143, in get_template
+    template, origin = self.find_template(template_name)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/engine.py", line 125, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/loaders/cached.py", line 58, in get_template
+    template = super().get_template(template_name, skip)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/loaders/base.py", line 30, in get_template
+    contents, origin, origin.template_name, self.engine,
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 155, in __init__
+    self.nodelist = self.compile_nodelist()
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 193, in compile_nodelist
+    return parser.parse()
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 478, in parse
+    raise self.error(token, e)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 476, in parse
+    compiled_result = compile_func(self, token)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/defaulttags.py", line 817, in do_for
+    nodelist_loop = parser.parse(('empty', 'endfor',))
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 449, in parse
+    raise self.error(token, e)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 447, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 563, in compile_filter
+    return FilterExpression(token, self)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 658, in __init__
+    self.args_check(filter_name, filter_func, args)
+  File "/root/training/Python-3.6.5/lib/python3.6/site-packages/django/template/base.py", line 718, in args_check
+    (name, alen - dlen, plen))
+[ngo.template.exceptions.TemplateSyntaxError: time_change requires 0 arguments, 1 provided23/Oct/2022 07:11:29] WARNING [django.server:161] "GET /static/fontawesome-free-5.15.4-web/css/all.min.css HTTP/1.1" 404 12356

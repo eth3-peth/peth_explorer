@@ -1,0 +1,50 @@
+{% load humanize %}
+{% load burst_tags %}
+
+<div class="table-responsive">
+  <table class="table table-hover small table-sm">
+    <thead>
+    <tr>
+      <th scope="col" class="d-none d-sm-table-cell">Token ID</th>
+      <th scope="col">Ticker</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Share</th>
+      <th scope="col">Since Block</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for asset in assets %}
+      <tr>
+        <td class="d-none d-sm-table-cell"><a href="{% url 'asset-detail' asset.asset_id %}">{{ asset.asset_id|truncatechars:10 }}</a></td>
+        <td class="text-nowrap text-uppercase">
+          {% if asset|is_asset_blocked %}
+            <span class="border m-2 pl-1 pr-1 rounded border-warning bg-warning font-weight-bold text-uppercase"><spam><i class="fas fa-exclamation-circle"></i> Name blocked</spam></span>
+          {% else %}
+            <a href="{% url 'asset-detail' asset.asset_id %}">{{ asset.name }}</a>
+            {% if asset|is_asset_phishing %}
+              <span class="border m-2 pl-1 pr-1 rounded border-warning bg-warning font-weight-bold text-uppercase"><spam><i class="fas fa-exclamation-circle"></i> Potential phishing</spam></span>
+            {% endif %}
+          {% endif %}
+        </td>
+        <td>
+          {% if asset.decimals == 0 %}
+            {{ asset.quantity|intcomma }}
+          {% else %}
+            {{ asset.quantity|div_decimals:asset.decimals|intcomma }}
+          {% endif %}
+        </td>
+        <td>
+          {% if asset|is_asset_treasury:filtered_account %}
+            Treasury
+          {% else %}
+            {% with circulating=asset.asset_id|asset_circulating %}
+              {{ asset.quantity|div:circulating|mul:100|floatformat:2|intcomma }} %
+            {% endwith %}
+          {% endif %}
+          </td>
+        <td><a href="{% url 'block-detail' asset.height %}">{{ asset.height }}</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>

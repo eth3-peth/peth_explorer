@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+{% load burst_tags %}
+
+{% block title %} - Block {{ blk.height }}{% endblock %}
+
+{% block content %}
+
+  <h5 class="p-2">Block #{{ blk.id }}</h5>
+
+  <div class="card-deck mb-3">
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+
+        <div class="table-responsive">
+          <table class="table small table-sm">
+            <tbody>
+            <tr>
+              <th style="width: 130px;">Block Height</th>
+              <td>
+                <div>
+                  <span class="d-inline-block mr-2 my-auto font-weight-bold">{{ blk.height }}</span>
+                  <nav class="d-inline-block my-auto" aria-label="Block navigation">
+                    <ul class="pagination my-auto">
+                      {% if blk.previous_block %}
+                        <li class="page-item"><a class="page-link" href="{% url 'block-detail' blk.previous_block.height %}">Prev</a></li>
+                      {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#">Prev</a></li>
+                      {% endif %}
+                      {% if blk.next_block %}
+                        <li class="page-item"><a class="page-link" href="{% url 'block-detail' blk.next_block.height %}">Next</a></li>
+                      {% else %}
+                        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+                      {% endif %}
+                    </ul>
+                  </nav>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th>Timestamp</th>
+              <td>{{ blk.timestamp|time_change }}</td>
+            </tr>
+            <tr>
+              <th>Transactions</th>
+              <td>
+                {% if blk.txs_cnt > 0 %}
+                  <a href="{% url 'txs' %}?block={{ blk.height }}">{{ blk.txs_cnt|intcomma }} transactions</a>
+                {% else %}
+                  0 transactions
+                {% endif %}
+                in this block
+              </td>
+            </tr>
+            <tr>
+              <th>Total Amount</th>
+              <td>{{ blk.total_amount|burst_amount|div:10000|intcomma|append_symbol }}
+<!--                <span class="text-info">(${{ blk.total_amount|burst_amount|in_usd|rounding:5|intcomma }})</span>-->
+              </td>
+            </tr>
+            <tr>
+              <th>Total Fee</th>
+              <td>{{ blk.total_fee|burst_amount|divs:10000|intcomma|append_symbol }}
+<!--                <span class="text-info">(${{ blk.total_fee|burst_amount|in_usd|rounding:5|intcomma }})</span>-->
+              </td>
+            </tr>
+            <tr>
+              <th>Mined by</th>
+              <td>
+                {% include "account_link.html" with account_id=blk.generator_id account_name=blk.generator_name oneline=True %}
+              </td>
+            </tr>
+            <tr>
+              <th>Pool</th>
+              <td>
+                {% if blk.pool_id and blk.pool_id != blk.generator_id %}
+                  {% include "account_link.html" with account_id=blk.pool_id account_name=blk.pool_name oneline=True %}
+                {% else %}
+                  <span class="text-success">Solo Miner</span>
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <th>Generation time</th>
+              <td>{% block_generation_time blk %}</td>
+            </tr>
+            {% if blk.total_fee_burnt %}
+            <tr>
+              <th>Block Reward</th>
+              <td>{{ blk|block_reward_with_fee_burnt|div:10000|intcomma|append_symbol }}</td>
+            </tr>
+            {% else %}
+              <tr>
+              <th>Block Reward</th>
+              <td>{{ blk|block_reward_with_fee|div:10000|intcomma|append_symbol }}</td>
+            </tr>
+            {% endif %}
+<!--            {% if blk|block_fee_miner %}-->
+<!--               <tr>-->
+<!--                <th>Miner Fees</th>-->
+<!--                <td>{{ blk|block_fee_miner|burst_amount|intcomma|append_symbol }}</td>-->
+<!--              </tr>-->
+<!--            {% endif %}-->
+<!--            {% if blk.total_fee_burnt %}-->
+<!--              <tr>-->
+<!--                <th>Burnt Fees</th>-->
+<!--                <td>{{ blk.total_fee_burnt|burst_amount|intcomma|append_symbol }}</td>-->
+<!--              </tr>-->
+<!--            {% endif %}-->
+<!--            {% if blk.total_fee_cash_back %}-->
+<!--              <tr>-->
+<!--                <th>Cashback</th>-->
+<!--                <td>{{ blk.total_fee_cash_back|burst_amount|intcomma|append_symbol }}</td>-->
+<!--              </tr>-->
+<!--            {% endif %}-->
+            <tr class="collapse show_more_info">
+              <th>Size</th>
+              <td>{{ blk.payload_length|filesizeformat }}</td>
+            </tr>
+            <tr class="collapse show_more_info">
+              <th style="min-width: 160px;">Base Target</th>
+              <td>{{ blk.base_target|base_target_capacity}}</td>
+            </tr>
+            <tr class="collapse show_more_info">
+              <th>Version</th>
+              <td>{{ blk.version }}</td>
+            </tr>
+            <tr class="collapse show_more_info">
+              <th>Nonce</th>
+              <td>{{ blk.nonce }}</td>
+            </tr>
+            <tr class="collapse show_more_info">
+              <th>Payload Length</th>
+              <td>{{ blk.payload_length }}</td>
+            </tr>
+            <tr class="collapse show_more_info">
+              <th>Payload Hash</th>
+              <td class="text-monospace" style="word-wrap: break-word; max-width: 250px">{{ blk.payload_hash|bin2hex }}</td>
+            </tr>
+            <tr class="collapse show_more_info">
+              <th>Cumulative Difficulty</th>
+              <td class="text-monospace">{{ blk.cumulative_difficulty|bin2hex}}</td>
+            </tr>
+            <tr class="collapse show_more_info">
+              <th>Generator Public Key</th>
+              <td class="text-monospace" style="word-wrap: break-word; max-width: 250px">{{ blk.generator_public_key|bin2hex }}</td>
+            </tr>
+            <tr class="collapse show_more_info">
+              <th>Generation Signature</th>
+              <td class="text-monospace" style="word-wrap: break-word; max-width: 250px">{{ blk.generation_signature|bin2hex }}</td>
+            </tr>
+            <tr class="collapse show_more_info">
+              <th>Block Signature</th>
+              <td class="text-monospace" style="word-wrap: break-word; max-width: 250px">{{ blk.block_signature|bin2hex }}</td>
+            </tr>
+            <tr class="collapse show_more_info">
+              <th>Contracts</th>
+              <td>
+                <textarea id="ats" class="form-control" spellcheck="false" rows="5" disabled>{{ blk.ats|bin2hex }}</textarea>
+                <label for="ats"></label>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <a data-toggle="collapse" data-target=".show_more_info" href="#">Toggle details</a>
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

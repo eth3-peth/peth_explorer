@@ -1,0 +1,38 @@
+{% load humanize %}
+{% load burst_tags %}
+
+<div class="table-responsive">
+  <table class="table table-hover small table-sm text-left">
+    <tbody>
+    {% for tx in txs %}
+      <tr>
+        <td  class="text-nowrap align-top">
+          <span class="btn btn-outline-primary">
+            <span class="btn-icon__inner text-dark">
+              <a href="{% url 'tx-detail' tx.id %}">TX</a>
+            </span>
+          </span>
+        </td>
+        <td class="text-nowrap align-top">
+          <a href="{% url 'tx-detail' tx.id %}">{{ tx.id|truncatechars:10 }}</a><br>
+          <span class="small">{{ tx.block_timestamp|time_change }}</span>
+        </td>
+        <td class="text-nowrap">
+          From
+          {% include "account_link.html" with account_id=tx.sender_id account_name=tx.sender_name %}<br>
+          To
+          {% if tx.recipient_id or tx.multiout %}
+            {% include "recipient_link.html" with account_id=tx.recipient_id account_name=tx.recipient_name %}
+          {% else %}
+            {{ tx|tx_type }}
+          {% endif %}
+        </td>
+        <td class="text-nowrap d-none d-sm-table-cell align-top" title="Amount">
+          <span> {% widthratio tx|tx_amount|rounding:5|intcomma 1 10000 %}</span><br>
+          <span class="text-success"> {{ tx|tx_symbol }} </span>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>

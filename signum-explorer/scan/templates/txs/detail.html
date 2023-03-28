@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+{% load burst_tags %}
+
+{% block title %} - Transaction #{{ tx.id }}{% endblock %}
+
+{% block description %}
+{{ tx|tx_type }}
+{% if tx.type == 2 and tx.subtype == 2 or tx.subtype == 3 %}
+  {{ tx|tx_quantity|intcomma }} {{ tx|tx_symbol }}
+{% else %}
+  {{ tx|tx_amount|intcomma }} {{ tx|tx_symbol }}
+{% endif %}
+{% if tx.type == 2 and tx.subtype == 9 %}
+  {{ tx|tx_quantity_multi:1|rounding:5|intcomma }} {{ tx|tx_symbol_multi:1 }}
+  {{ tx|tx_quantity_multi:2|rounding:5|intcomma }} {{ tx|tx_symbol_multi:2 }}
+  {% if tx|tx_asset_multi_size > 2 %}
+    {{ tx|tx_quantity_multi:3|rounding:5|intcomma }}{{ tx|tx_symbol_multi:3 }}
+  {% endif %}
+  {% if tx|tx_asset_multi_size == 4 %}
+    {{ tx|tx_quantity_multi:4|rounding:5|intcomma }} {{ tx|tx_symbol_multi:4 }}
+  {% endif %}
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+  <h5 class="p-2">Transaction ID<br class="d-md-none" /> {{ tx.id }}
+    <a class="btn btn-sm btn-icon btn-soft-secondary rounded-circle copy-btn px-1" href="#" data-clipboard-text="{{ tx.id }}"><i class="far fa-copy"></i></a>
+  </h5>
+
+  <div class="card-deck mb-3">
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+
+        <div class="table-responsive">
+          <table class="table small table-sm">
+            <tbody>
+            <!--
+            <tr>
+              <th style="width: 130px;">ID</th>
+              <th>
+                {{ tx.id }}
+                <a class="btn btn-sm btn-icon btn-soft-secondary rounded-circle copy-btn px-1" href="#" data-clipboard-text="{{ tx.id }}"><i class="far fa-copy"></i></a>
+              </th>
+            </tr>
+            -->
+            <tr>
+              <th style="width: 130px;">Height</th>
+              <td>
+                {% if tx.height != 0 %}
+                  <a href="{% url 'block-detail' tx.block.height %}">{{ tx.block.height }}</a>
+                  <br class="d-md-none" />
+                  {% include "block_confirmation.html" with blocks_confirm=tx.blocks_confirm %}
+                {% else %}
+                  Pending...
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <th>Type</th>
+              <td>{{ tx|tx_type }}
+              {% if tx.type == 2 and tx.subtype == 8 %}
+                <span> for Token </span> <span class="text-success"> {{ tx|tx_asset_holder}}</span>
+              {% endif %}
+              </td>
+            </tr>
+            {% if tx.type == 2 and tx|tx_asset_id != 0 %}
+            <tr>
+              <th>Token Ticker</th>
+              <td><a href="{% url 'asset-detail' tx|tx_asset_id %}">{{ tx|tx_symbol }}</a></td>
+            </tr>
+            <tr>
+              <th>Token ID</th>
+              <td><a href="{% url 'asset-detail' tx|tx_asset_id %}">{{ tx|tx_asset_id }}</a></td>
+            </tr>
+            {% endif %}
+            <tr>
+              <th>Timestamp</th>
+              <td>{{ tx.timestamp|time_change }}</td>
+            </tr>
+            <tr>
+              <th>From</th>
+              <td>
+                {% include "account_link.html" with account_id=tx.sender_id account_name=tx.sender_name oneline=True %}
+              </td>
+            </tr>
+            <tr>
+              <th>To</th>
+              <td>
+                {% if tx.recipient_id or tx.multiout %}
+                  {% include "recipient_link.html" with tx=tx|tx_load_recipients oneline=True %}
+                {% elif  tx.recipient_id == Null and tx.type == 0  %}
+                  Burning Address
+                {% elif  tx.recipient_id == Null and tx.type == 2 and tx.subtype == 1 or tx.subtype == 9 %}
+                  Burning Address
+                {% elif  tx.recipient_id == Null and tx.type == 20 %}
+                 {% include "recipient_link.html" with account_id=tx.sender_id account_name=tx.sender_name oneline=True %}
+                {% else %}
+                  {{ tx|tx_type }}
+                  {% if tx.type == 2 and tx.subtype == 8 %}
+                  <br>
+                  <span><a href="{% url 'distribution' %}?a={{ tx.id }}">Click for more details</a> </span>
+                  {% endif %}
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <th>Value</th>
+              <td>
+                {% if tx.type == 2 and tx.subtype == 1 and tx.amount > 0 %}
+                  <br>
+                  <span>{{ tx.amount|burst_amount|rounding:5|divs:10000|intcomma }}</span>
+                  <span class="text-success"> {% coin_symbol %} </span><br>
+                {% endif %}
+                {% if tx.type == 20 or tx.type == 22 %}
+                  {{ tx|tx_amount|divs:10000|intcomma }}
+                {% elif tx.type == 2 and tx.subtype == 3 or tx.subtype == 1 or tx.subtype == 2 or tx.subtype == 6 %}
+                  {{ tx|tx_quantity|divs:10000|intcomma }}
+                {% else %}
+                  {{ tx|tx_amount|divs:10000|intcomma }}
+                {% endif %}
+                {{ tx|tx_symbol }} <br>
+<!--                {% if tx.type != 2 %}-->
+<!--                  <span class="text-info">(${{ tx|tx_amount|in_usd|rounding:4|intcomma }})</span>-->
+<!--                {% endif %}-->
+
+              {% if tx.type == 2 and tx.subtype == 9 %}
+              <span>{{ tx|tx_quantity_multi:1|divs:10000|intcomma }}</span>
+              <span class="text-success"> {{ tx|tx_symbol_multi:1 }} </span><br>
+              <span>{{ tx|tx_quantity_multi:2|divs:10000|intcomma }}</span>
+              <span class="text-success"> {{ tx|tx_symbol_multi:2 }} </span><br>
+                {% if tx|tx_asset_multi_size > 2 %}
+                  <span>{{ tx|tx_quantity_multi:3|divs:10000|intcomma }}</span>
+                  <span class="text-success"> {{ tx|tx_symbol_multi:3 }} </span><br>
+                {% endif %}
+                {% if tx|tx_asset_multi_size == 4 %}
+                  <span>{{ tx|tx_quantity_multi:4|divs:10000|intcomma }}</span>
+                  <span class="text-success"> {{ tx|tx_symbol_multi:4 }} </span><br>
+                {% endif %}
+              {% endif %}
+
+
+              </td>
+            </tr>
+            <tr>
+              <th>Fee</th>
+              <td>{{ tx.fee|burst_amount|divs:10000|intcomma|append_symbol }}
+<!--                <span class="text-info">(${{ tx.fee|burst_amount|in_usd|rounding:4|intcomma }})</span>-->
+              </td>
+            </tr>
+             {% if tx.type == 2 and tx.subtype == 8 and tx|tx_quantity:tx.sender_id > 0 %}
+              <tr>
+                <th>Distributed Token </th>
+                <td>{{ tx|tx_symbol_distribution}} </td>
+              </tr>
+               <tr>
+                <th>Quantity</th>
+                <td>{{ tx|tx_quantity:tx.sender_id|rounding:5|intcomma }} </td>
+              </tr>
+            {% endif %}
+            <tr class="collapse show_more_info">
+              <th style="min-width: 160px;">Version</th>
+              <td>{{ tx.version }}</td>
+            </tr>
+            <tr class="collapse show_more_info">
+              <th>Deadline</th>
+              <td>{{ tx.deadline }}</td>
+            </tr>
+            {% if tx.height != 0 %}
+            <tr class="collapse show_more_info">
+              <th>Block Timestamp</th>
+              <td>{{ tx.block_timestamp|time_change }} </td>
+            </tr>
+            {% endif %}
+            {% if tx.ec_block_id %}
+            <tr class="collapse show_more_info">
+              <th>EC Block ID</th>
+              <td>{{ tx.ec_block_id }}</td>
+            </tr>
+            <tr class="collapse show_more_info">
+              <th>EC Block Height</th>
+              <td>{{ tx.ec_block_height }}</td>
+            </tr>
+            {% endif %}
+            {% if tx.height != 0 %}
+            <tr class="collapse show_more_info">
+              <th>Has message</th>
+              <td>{{ tx.has_message|yesno }}</td>
+            </tr>
+            <tr class="collapse show_more_info">
+              <th>Has encrypted message</th>
+              <td>{{ tx.has_encrypted_message|yesno }}</td>
+            </tr>
+            <tr class="collapse show_more_info">
+              <th>Has Public Key Announcement</th>
+              <td>{{ tx.has_public_key_announcement|yesno }}</td>
+            </tr>
+            <tr class="collapse show_more_info">
+              <th>Has Encrypttoself Message</th>
+              <td>{{ tx.has_encrypttoself_message|yesno }}</td>
+            </tr>
+            {% endif %}
+            <tr class="collapse show_more_info">
+              <th>Sender Public Key</th>
+              <td class="text-monospace" style="word-wrap: break-word; max-width: 250px">{{ tx.sender_public_key|bin2hex }}</td>
+            </tr>
+            {% if tx.signature %}
+            <tr class="collapse show_more_info">
+              <th>Signature</th>
+              <td class="text-monospace" style="word-wrap: break-word; max-width: 250px">{{ tx.signature|bin2hex }}</td>
+            </tr>
+            {% endif %}
+            {% if tx.referenced_transaction_fullhash and tx.height != 0 %}
+            <tr class="collapse show_more_info">
+              <th class=>Referenced Transaction Fullhash</th>
+              <td class="text-monospace" style="word-wrap: break-word; max-width: 250px">{{ tx.referenced_transaction_fullhash|bin2hex }}</td>
+            </tr>
+            {% endif %}
+            <tr class="collapse show_more_info">
+              <th>Full Hash</th>
+              <td class="text-monospace" style="word-wrap: break-word; max-width: 250px">{{ tx.full_hash|bin2hex }}</td>
+            </tr>
+            {% if tx.height != 0 %}
+            {% if tx.has_message %}
+            <tr>
+              <th>Message</th>
+              <td class="text-monospace">
+                <textarea id="attachment" class="form-control" spellcheck="false" rows="5" disabled>{{ tx|tx_message }}</textarea>
+                <label for="attachment"></label>
+              </td>
+            </tr>
+            {% endif %}
+            <tr class="collapse show_more_info">
+              <th>Attachment</th>
+              <td class="text-monospace">
+                <textarea id="attachment" class="form-control" spellcheck="false" rows="5" disabled>{{ tx.attachment_bytes|bin2hex }}</textarea>
+                <label for="attachment"></label>
+              </td>
+            </tr>
+            {% endif %}
+            </tbody>
+          </table>
+        </div>
+        <a data-toggle="collapse" data-target=".show_more_info" href="#">Toggle details</a>
+      </div>
+    </div>
+  </div>
+
+  <!--
+  {% if tx.height == 0 %}
+  <script>
+    setTimeout(function(){
+       document.location.reload();
+    }, 10000);
+  </script>
+  {% endif %}
+  -->
+
+{% endblock %}

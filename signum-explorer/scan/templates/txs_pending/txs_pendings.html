@@ -1,0 +1,56 @@
+{% load humanize %}
+{% load burst_tags %}
+
+<div class="table-responsive">
+  <table class="table table-hover small table-sm align-items-left">
+  {% if show_head and txs_pending|length > 0 %}
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col" class="d-none d-sm-table-cell">Type</th>
+        <th scope="col">From</th>
+        <th scope="col" class="d-none d-sm-table-cell">To</th>
+        <th scope="col" class="d-none d-sm-table-cell">Value</th>
+        <th scope="col" class="d-none d-sm-table-cell">Txn Fee</th>
+        <th scope="col" class="d-none d-sm-table-cell">Deadline</th>
+      </tr>
+    </thead>
+  {% endif %}
+    <tbody>
+    {% for tx in txs_pending %}
+      <tr>
+        <td class="text-nowrap">
+          <a href="{% url 'tx-detail' tx.transaction %}">{{ tx.transaction|truncatechars:10 }}</a><br>
+          <span class="small">{{ tx.timestamp|naturaltime }}</span>
+        </td>
+        <td class="d-none d-sm-table-cell">{{ tx.tx_name }}</td>
+        <td class="text-nowrap">
+          {% include "account_link.html" with account_id=tx.sender account_name=tx.sender_name %}
+        </td>
+        <td class="text-nowrap d-none d-sm-table-cell">
+          {% if tx.recipient %}
+            {% include "recipient_link.html" with account_id=tx.recipient account_name=tx.recipient_name %}
+          {% else %}
+            {{ tx.tx_name }}
+          {% endif %}
+        </td>
+        <td class="text-nowrap d-none d-sm-table-cell" title="Amount">
+          <span>{{ tx.amountNQT|burst_amount|rounding:5|intcomma }}</span><br>
+          <span class="text-success"> {% coin_symbol %} </span>
+        </td>
+        <td class="text-nowrap d-none d-sm-table-cell" title="Fee">
+          <span>{{ tx.feeNQT|burst_amount|rounding:5|intcomma }}</span><br>
+          <span class="text-success"> {% coin_symbol %} </span>
+        </td>
+        {% if show_head %}
+        <td class="text-nowrap d-none d-sm-table-cell" title="Deadline">{{ tx|tx_deadline|smooth_timedelta }}</td>
+        {% endif %}
+      </tr>
+    {% empty %}
+      <div class="text-secondary" style="display: flex;flex-direction: column;justify-content: center;height: 90%;">
+        <h5>No pending transactions</h5>
+      </div>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
